@@ -1,0 +1,35 @@
+version: "3"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
+    environment:
+      - cluster.name=node-elk
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.graph.enabled=false
+      - xpack.watcher.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ELASTIC_PASSWORD=d3v3l0p"
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    tty : true
+  kibana:
+    image: kibana:7.0.1
+    ports:
+      - 5601:5601
+    environment:
+      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
+      - "ELASTICSEARCH_USERNAME=dev"
+      - "ELASTICSEARCH_PASSWORD=d3v3l0p"
+    depends_on:
+      - elasticsearch
+
+volumes:
+  esdata1:
+    driver: local
